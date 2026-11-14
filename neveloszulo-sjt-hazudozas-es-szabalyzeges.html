@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nevelőszülői SJT – Hazudozás és szabályszegés</title>
+<style>
+:root{
+  color-scheme:light;
+  --ink:#182c27;
+  --forest:#133c32;
+  --green:#205648;
+  --muted:#425b53;
+  --line:#cad9d2;
+  --paper:#ffffff;
+  --wash:#f3f6f4;
+  --best-bg:#e4f0e9;
+  --worst-bg:#fcecea;
+  --worst-ink:#962923;
+  --worst-line:#c25e57;
+  --notice-bg:#fff7e3;
+  --notice-ink:#533915;
+  --notice-line:#e3c488;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  margin:0;
+  background:var(--wash);
+  color:var(--ink);
+  font:1rem/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+main{
+  max-width:896px;
+  margin:auto;
+  padding:clamp(.9rem,3.5vw,2.25rem);
+}
+header,article,section.panel{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:clamp(1.15rem,3.5vw,2rem);
+  margin-bottom:1.1rem;
+}
+header{
+  background:linear-gradient(135deg,var(--forest) 0%,var(--green) 100%);
+  color:#fff;
+  border:0;
+  position:relative;
+  overflow:hidden;
+}
+header::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  right:-80px;
+  top:-110px;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+  pointer-events:none;
+}
+.btesz-logo{
+  display:block;
+  width:148px;
+  max-width:100%;
+  height:auto;
+  background:#fff;
+  border-radius:8px;
+  padding:6px 10px;
+  margin-bottom:1rem;
+}
+h1,h2,h3,p{margin:0 0 .65rem}
+h1{font:600 clamp(1.9rem,4.8vw,3rem)/1.1 Georgia,"Times New Roman",serif;letter-spacing:-.02em}
+h2{font:600 clamp(1.35rem,3.5vw,1.65rem)/1.25 Georgia,"Times New Roman",serif;color:var(--forest)}
+h3{font-size:1.05rem;font-weight:700;color:var(--forest);margin-top:1.5rem}
+.eyebrow{
+  font-weight:600;
+  font-size:.9rem;
+  opacity:.9;
+  margin-bottom:.35rem;
+}
+.notice{
+  background:var(--notice-bg);
+  color:var(--notice-ink);
+  border:1px solid var(--notice-line);
+  border-radius:12px;
+  padding:.9rem 1rem;
+  margin:.9rem 0;
+  font-size:.93rem;
+}
+.muted,small{color:var(--muted)}
+details.privacy{
+  background:#f7faf8;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:.75rem 1rem;
+  margin-top:.85rem;
+}
+summary{cursor:pointer;font-weight:650;color:var(--forest);list-style-position:inside}
+details.privacy p:first-of-type{margin-top:.65rem}
+#participant-name{
+  display:block;
+  width:min(100%,32rem);
+  min-height:44px;
+  margin:.45rem 0 0;
+  padding:.65rem .85rem;
+  border:1.5px solid var(--muted);
+  border-radius:10px;
+  font:inherit;
+  background:#fff;
+  color:var(--ink);
+}
+#participant-name[aria-invalid="true"]{border-color:var(--worst-ink)}
+#result-name{overflow-wrap:anywhere}
+.progress{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(243,246,244,.96);
+  backdrop-filter:blur(6px);
+  padding:.65rem 0 .8rem;
+  border-bottom:1px solid var(--line);
+  margin-bottom:1.1rem;
+}
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.5rem;
+  font-weight:650;
+  font-size:.9rem;
+  font-variant-numeric:tabular-nums;
+}
+progress,meter{
+  width:100%;
+  height:.55rem;
+  display:block;
+  accent-color:var(--green);
+}
+progress{margin:.35rem 0 .5rem}
+.jump-nav{
+  display:flex;
+  gap:.35rem;
+  flex-wrap:wrap;
+}
+.jump-btn{
+  min-width:2.15rem;
+  height:2rem;
+  padding:0 .5rem;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--muted);
+  font:inherit;
+  font-size:.82rem;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+  cursor:pointer;
+}
+.jump-btn.partial{
+  background:var(--notice-bg);
+  border-color:#9d661e;
+  color:var(--notice-ink);
+}
+.jump-btn.done{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+article{scroll-margin-top:7.2rem;transition:border-color .15s ease}
+article.complete{border-color:rgba(32,86,72,.5)}
+.item-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:.75rem;
+  margin-bottom:.5rem;
+}
+.status-text{
+  flex-shrink:0;
+  font-size:.8rem;
+  font-weight:650;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.status-text.partial{color:#9d661e}
+.status-text.done{color:var(--green)}
+.item-actions{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+.clear-btn{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font:inherit;
+  font-size:.8rem;
+  font-weight:600;
+  padding:.35rem .5rem;
+  border-radius:6px;
+  cursor:pointer;
+}
+.clear-btn:hover{background:var(--wash);color:var(--ink)}
+fieldset{
+  margin:1.1rem 0 0;
+  padding:.75rem .9rem;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fafcfb;
+  min-width:0;
+}
+legend{font-weight:700;font-size:.9rem;color:var(--green);padding:0 .45rem}
+.reaction{
+  padding:.8rem .25rem;
+  border-bottom:1px solid var(--line);
+}
+.reaction:last-child{border-bottom:0}
+.ratings{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.55rem;
+  margin-top:.6rem;
+}
+.option{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.55rem .8rem;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  cursor:pointer;
+  font-size:.9rem;
+  font-weight:500;
+  transition:background-color .12s ease,border-color .12s ease;
+}
+.option.best:has(input:checked){
+  background:var(--best-bg);
+  border-color:var(--green);
+  color:var(--forest);
+  font-weight:700;
+}
+.option.worst:has(input:checked){
+  background:var(--worst-bg);
+  border-color:var(--worst-line);
+  color:var(--worst-ink);
+  font-weight:700;
+}
+.option:has(input:disabled){
+  opacity:.5;
+  cursor:not-allowed;
+}
+input[type=radio]{
+  margin:0;
+  width:1.05rem;
+  height:1.05rem;
+  flex-shrink:0;
+  accent-color:var(--green);
+}
+.option.worst input[type=radio]{accent-color:var(--worst-ink)}
+.actions{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.25rem 0 0}
+button.primary,button.secondary{
+  font:inherit;
+  font-size:.92rem;
+  font-weight:650;
+  padding:.7rem 1.15rem;
+  min-height:44px;
+  border:1px solid var(--green);
+  border-radius:10px;
+  background:var(--green);
+  color:#fff;
+  cursor:pointer;
+}
+button.primary:hover{background:var(--forest)}
+button.secondary{background:#fff;color:var(--green)}
+button.secondary:hover{background:#f2f7f4}
+:focus-visible{outline:3px solid #a46415;outline-offset:2px}
+.error{color:var(--worst-ink);font-weight:650;margin-top:.45rem}
+.score{
+  font:600 clamp(2.2rem,6vw,3rem)/1 Georgia,"Times New Roman",serif;
+  color:var(--green);
+  margin:1rem 0 .4rem;
+  font-variant-numeric:tabular-nums;
+}
+.profile{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:.75rem;
+  margin:.85rem 0 1.25rem;
+}
+.profile div{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:.9rem;
+  background:#fafcfb;
+}
+.review{padding-left:1.35rem;margin:.75rem 0 1.25rem}
+.review li{
+  margin-bottom:.85rem;
+  padding-bottom:.85rem;
+  border-bottom:1px solid var(--line);
+}
+.review li:last-child{border-bottom:0}
+.print-note{display:none}
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(19,60,50,.45);
+  padding:1rem;
+}
+.modal-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:1.5rem;
+  max-width:420px;
+  width:100%;
+}
+[hidden]{display:none!important}
+@page{size:A4;margin:14mm}
+@media print{
+  body{background:#fff;color:#000;font-size:10pt}
+  main{max-width:none;padding:0}
+  header,#intro,#test,.actions,noscript,.modal-backdrop{display:none!important}
+  .print-note{display:block}
+  section.panel{padding:0;border:0}
+  .profile div,.review li,.notice{break-inside:avoid}
+  h2,h3{break-after:avoid}
+  .score{font-size:24pt}
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img id="btesz-logo" class="btesz-logo" src="data:image/png;base64,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" alt="Baptista Tevékeny Szeretet Misszió">
+    <p class="eyebrow">Nevelőszülői helyzetmegítélési teszt</p>
+    <h1>Hazudozás és szabályszegés</h1>
+    <p>10 helyzet nevelőszülői önreflexióhoz és képzéshez</p>
+  </header>
+
+  <section class="panel" id="intro" aria-labelledby="guide">
+    <h2 id="guide">Kitöltési útmutató</h2>
+    <p>Képzelje el, hogy Ön kerül a leírt helyzetbe. Gondolja végig, mit tenne. A négy reakció közül jelölje meg, melyiket tartaná a <strong>legmegfelelőbbnek</strong>, és melyiket a <strong>legkevésbé megfelelőnek</strong>. Két különböző reakciót jelöljön meg.</p>
+    <p class="notice"><strong>Ez a teszt nem validált. Önálló kiválasztási vagy alkalmassági döntésre nem alkalmas.</strong> A pontozási kulcs előzetes szakmai javaslat, külső szakértői felülvizsgálat és kipróbálás nélkül.</p>
+    <details class="privacy">
+      <summary>Adatvédelmi tájékoztató</summary>
+      <p>A teszt internetkapcsolat nélkül, helyben fut. A kitöltő neve azonosítóként szerepel az értékelőlapon. A teszt a nevet és a válaszokat nem küldi el és nem menti el. Ezek az aktuális megnyitás idejére a böngésző memóriájában maradnak. Bezáráskor, frissítéskor vagy új kitöltés indításakor törlődnek.</p>
+      <p>A nyomtatott vagy PDF-be mentett összesítő külön példány, amelyet Ön kezel.</p>
+    </details>
+  </section>
+
+  <noscript><p class="notice">A válaszok keveréséhez és a pontozáshoz engedélyezze a JavaScript futását a böngészőben.</p></noscript>
+
+  <form id="test" autocomplete="off" novalidate hidden>
+    <section class="panel" aria-label="Kitöltési azonosító">
+      <label for="participant-name"><strong>Kitöltő neve (kitöltési azonosító)</strong></label>
+      <input type="text" id="participant-name" autocomplete="off" placeholder="Adja meg a nevét vagy azonosítóját" required>
+      <p class="error" id="name-error" role="alert"></p>
+    </section>
+
+    <div class="progress">
+      <div class="progress-top">
+        <span id="progress-label" role="status"></span>
+        <span id="progress-percent" class="muted">0%</span>
+      </div>
+      <progress id="progress" aria-label="Kitöltött helyzetek" max="10" value="0"></progress>
+      <nav class="jump-nav" id="jump-nav" aria-label="Gyorsugrás a helyzetekhez"></nav>
+    </div>
+
+    <div id="items"></div>
+    <p class="error" id="error" role="alert"></p>
+    <div class="actions"><button type="submit" class="primary">Értékelés megtekintése</button></div>
+  </form>
+
+  <section class="panel" id="results" aria-labelledby="result-title" hidden>
+    <img id="report-logo" class="btesz-logo" src="data:image/png;base64,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" alt="Baptista Tevékeny Szeretet Misszió">
+    <h2 id="result-title" tabindex="-1">Egyéni értékelőlap</h2>
+    <p class="print-note">Nevelőszülői SJT – Hazudozás és szabályszegés</p>
+    <div id="report"></div>
+    <div class="actions">
+      <button type="button" id="print" class="primary">Nyomtatás / mentés PDF-be</button>
+      <button type="button" id="edit" class="secondary">Vissza a válaszokhoz</button>
+      <button type="button" id="restart" class="secondary">Új kitöltés</button>
+    </div>
+  </section>
+</main>
+
+<div id="restart-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal-card">
+    <h2 id="modal-title">Új kitöltés indítása</h2>
+    <p class="muted">Törli a jelenlegi válaszokat és a kitöltő nevét, és új kitöltést indít?</p>
+    <div class="actions">
+      <button type="button" id="confirm-restart" class="primary">Igen, új kitöltés</button>
+      <button type="button" id="cancel-restart" class="secondary">Mégsem</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const { competencies, items } = {"competencies":[{"name":"Bizalom és pártatlan meghallgatás","practice":"Gyakoroljon egy megfigyelésből és egy nyitott kérdésből álló mondatkezdést. A válasz után hagyjon időt, mielőtt visszakérdez."},{"name":"Felelősségvállalás és jóvátétel","practice":"Esetmegbeszélésen válasszon ki egy konkrét jóvátételi lépést. Gondolja végig, mi lesz a gyermek feladata, és miben segít a felnőtt."},{"name":"Életkorhoz igazított határtartás","practice":"Egy visszatérően megszegett szabályhoz tervezzen meg egy előzetes emlékeztetőt, egy kipróbálható alternatívát és egy kapcsolódó következményt."},{"name":"Biztonság és gyermekvédelmi reagálás","practice":"Szakmai konzultáción gyakorolja a veszélyhelyzet megszakítását, illetve a bántalmazásról szóló közlés nyugodt fogadását és továbbjelzését."}],"items":[{"title":"Eltört váza","area":0,"scene":"A nyolcéves Lili egyedül volt a nappaliban, amikor csörömpölést hallott. A földön törött váza és egy labda van. Lili azt mondja, a macska verte le a vázát. Korábban látta már, hogy a gyerek megijed, ha valami eltörik. A szilánkoktól biztonságos távolságban vannak.","options":["Biztonságossá tenném a helyszínt, és feltakarítanám a szilánkokat. Utána megmondanám Lilinek, hogy biztosan ő törte el a vázát, és beismerést kérnék tőle.","Emlékeztetném Lilit a benti labdázás szabályára, és estig eltenném a labdát, mert úgy gondolnám, hogy a labdázás miatt tört el a váza.","Feltakarítanám a szilánkokat, megnyugtatnám Lilit, és megbeszélném vele, hol lehet labdázni. A váza ügyére már nem térnék vissza.","Biztonságossá tenném a helyszínt, és feltakarítanám a szilánkokat. Elmondanám Lilinek, mit láttam, és megkérném, hogy a saját szavaival mesélje el, mi történt. Ha vállalná a felelősségét, megbeszélnék vele egy apró jóvátételt."],"why":"A megfigyelésekből induló kérdés teret ad Lilinek, hogy elmondja, mi történt. Egy rövid jóvátétel segít abban, hogy a beszélgetésnek legyen kézzelfogható folytatása."},{"title":"Eltűnt aprópénz","area":1,"scene":"Másodszor tűnik el aprópénz a konyhai tálkából. A tizenegy éves Máté négyszemközt elmondja, hogy ő vitte el, és a büfében költötte el, hogy a többiek mellé ülhessen. A pénz az egyik másik nevelt gyereké volt.","options":["Megkérném Mátét, hogy a vacsoránál mindenki előtt mondja el, mit tett. Ott beszélném meg vele, hogyan adná vissza a pénzt.","Megállapodnék Mátéval, hogy a következő zsebpénzéből adja vissza az összeget. A büfében történtekre csak akkor térnék vissza, ha ismét eltűnne pénz.","Négyszemközt megbeszélném Mátéval, kinek és hogyan adná vissza a pénzt. A következő napokban zárt helyen tartanám az aprót.","Megköszönném Máténak, hogy elmondta, mi történt, és méltányos jóvátételt egyeztetnék vele. Azt is megbeszélném vele, hogyan csatlakozhatna a többiekhez pénzköltés nélkül."],"why":"A négyszemközt egyeztetett jóvátételben Máté maga is részt vesz. A büféhelyzet átbeszélése segít megtervezni, mit tehet hasonló helyzetben."},{"title":"Labda a lakásban","area":2,"scene":"A kilencéves Bencénél a hiperaktivitás, túl mozgásosság főként várakozáskor látszik: sokat mocorog, felpattan, nehezen marad egyhelyben. Most megint labdázni kezd a folyosón. A labda majdnem eltalálja a kisebb gyereket. Bence el tudja mondani a szabályt, mégis gyakran megfeledkezik róla, amikor sokáig várakozik.","options":["Leállítanám a játékot, majd a hét végéig a kinti labdázást is megtiltanám Bencének, hogy megjegyezze a benti szabályt.","Leállítanám a játékot, és megkérném Bencét, hogy a várakozás végéig üljön le mellém. Legközelebb szóban emlékeztetném a szabályra.","Leállítanám a játékot, és biztonságos játékot kínálnék Bencének. Megbeszélném vele, hogyan játszhatna így legközelebb is.","Leállítanám a játékot, Bencével együtt kijelölném a labda helyét, és megbeszélném vele, milyen mozgás fér bele várakozás közben. Legközelebb szóban emlékeztetném erre."],"why":"A rövid előzetes jelzés és az elérhető mozgáslehetőség segít Bencének, hogy várakozás közben is alkalmazza a szabályt."},{"title":"Elmaradt beadandó","area":0,"scene":"A tizenhárom éves Nóri azt mondta, leadta a beadandóját. A tanár üzenete szerint viszont nincs leadva. Nóri a jegyek miatt mostanában feszült. Egyelőre nem világos, hogy feltöltési hiba történt-e, vagy a feladat sem készült el.","options":["A tanár üzenetét annak bizonyítékaként kezelném, hogy Nóri hazudott, és emiatt estére elvenném a telefonját.","Új határidőt kérnék a tanártól, és megmondanám Nórinak, hogy addigra mindenképp készüljön el.","Nórival együtt megnézném a feltöltési felületet. Ha nem találnánk ott a beadandót, közösen megterveznénk a pótlását.","Megmutatnám Nórinak a tanár üzenetét, megkérdezném, mit tud a leadásról, és együtt megnéznénk a feltöltési felületet. Ha elakadt, vagy tartott a következményektől, megbeszélném vele, hogyan kérhetne legközelebb segítséget, és hogyan rendezhetné a beadást."],"why":"A közös ellenőrzés tisztázza, mi történt a feltöltéssel. A beszélgetés segíthet megérteni, milyen támogatás kell Nórinak a következő beadáshoz."},{"title":"Két eltérő történet","area":0,"scene":"A nevelt gyerek azt mondja, hogy a nevelőszülő vér szerinti gyereke kezdte a lökdösődést. A másik gyerek ennek az ellenkezőjét állítja. Ön csak a végét látta. A gyerekek már külön vannak, sérülést nem lát.","options":["A saját gyerekem beszámolóját fogadnám el, mert régebb óta ismerem. A nevelt gyerektől várnék bocsánatkérést.","Mindkét gyereket emlékeztetném a lökdösődésre vonatkozó szabályra, és megbeszélném velük, mikor kérhetnének felnőtt segítséget egy vitában.","Külön hallgatnám meg a két gyereket, és mindkettőjükkel átbeszélném, hogyan állíthatnának le legközelebb egy elfajuló vitát.","Külön-külön, azonos nyitott kérdésekkel hallgatnám meg a két gyereket. Elmondanám, mit láttam biztosan. Ha tisztázódna, ki miért felelős, jóvátételt várnék attól, aki lökdösődött."],"why":"A külön meghallgatás teret ad mindkét beszámolónak. A jóvátétel olyan cselekedethez köthető, amelyről biztos információ áll rendelkezésre."},{"title":"Telefon lefekvés után","area":2,"scene":"A tizennégy éves Ági a megállapodás ellenére este az ágyban telefonozik a lefekvés után. Elmondja, hogy egy barátja ilyenkor szokott ráírni, és fél, hogy kimarad a beszélgetésből. Másnap nehezen kel fel.","options":["Átnézném Ági privát üzeneteit, és ezek alapján dönteném el, megérdemli-e, hogy másnap használhassa a telefonját.","Több napra elvenném a telefont, majd ugyanazokkal a feltételekkel adnám vissza, ha Ági vállalná a közösen elfogadott szabály betartását.","Betartatnám a közösen elfogadott szabályt, és attól az estétől a közös helyiségben töltenénk a telefont. Később megnézném Ágival, könnyebben kel-e reggel.","Újra megbeszélném Ágival, meddig üzenhetne este, és hogyan jelezhetné a barátjának, mikor lesz újra elérhető. Az egyeztetett időponttól a közös helyiségben töltenénk a telefont, később pedig megnéznénk, bevált-e a megállapodás."],"why":"Az esti határ mellett Ági kap egy megvalósítható módot a kapcsolattartásra. A közös töltőhely és a későbbi ellenőrzés segít felmérni, bevált-e a megállapodás."},{"title":"A felelősség áthárítása","area":1,"scene":"A tizenkét éves Dani engedély nélkül elvitte a kisebb gyerek gördeszkáját, és megsérült az egyik kerék. Dani szerint barátja kérte erre és csak ő használta a deszkát, állítja a kerék már előtte is lötyögött. A tulajdonos másnap használni szeretné a játékot.","options":["Megmondanám Daninak, hogy a teljes javítást a zsebpénzéből kell fizetnie, mert engedély nélkül vitte el a deszkát.","Megkérném Danit, hogy kérjen bocsánatot az elvitelért. A kerék javítását én intézném, hogy a tulajdonos másnap használhassa a deszkát.","Danival együtt megnézném a kereket, és megkérném, hogy segítsen a javításban. Megbeszélném vele, hogyan kérhetne legközelebb engedélyt.","Tisztáznám Danival, ki miért felelős, és hogy a kerék már korábban is lötyögött-e. Megkérném, hogy mondja el a tulajdonosnak, mi történt, és egyezzenek meg a javítás teendőinek és költségeinek arányos megosztásában."],"why":"Dani az engedély nélküli elvitelért akkor is felelősséget vállalhat, ha a kerék sérülésének eredete bizonytalan. A tulajdonossal egyeztetett lépés mindkettőjük szempontját figyelembe veszi."},{"title":"A lezárt partszakasz","area":3,"scene":"Kiránduláson a tízéves Zsófi átbújik egy korlát alatt, hogy közelebb menjen a meredek vízparthoz. Egy stabil, száraz, vélhetőleg biztonságos részen áll, hallja Önt, és ugyanazon az úton vissza tud jönni. A többi gyerek figyeli mi történik.","options":["Megkérdezném Zsófitól, miért ment át a korláton, és csak a válasza után szólítanám vissza.","Visszaszólítanám Zsófit, majd megmondanám neki, hogy a kirándulás hátralévő részében végig mellettem kell maradnia.","Rövid utasítással visszahívnám Zsófit, és ellenőrizném, hogy mindenki biztonságban van-e. A csoporttal átismételném, meddig szabad elmenni.","Rövid, nyugodt utasítással visszavezetném Zsófit ugyanazon az úton. Biztonságos helyen megbeszélném vele, miért ment át a korláton, és mutatnék neki egy megengedett helyet, ahonnan megnézhetné a vizet."],"why":"A visszavezetés megszünteti a közvetlen veszélyt. A rövid, helyben történő megbeszélés és a megengedett út megmutatása segít a következő döntésben."},{"title":"Késés a barátok miatt","area":2,"scene":"A tizenöt éves Marci fél órával a megbeszélt idő után ér haza. Azt mondja, a barátai cukkolták, amikor indulni akart. Volt nála telefon, de nem jelzett. Most otthon van, biztonságban.","options":["A következő találkozón Marci barátai előtt kérném számon a késést, hogy ők is lássák a következményét.","Megkérném Marcit, hogy legközelebb legalább induláskor küldjön üzenetet. A hazaérkezés időpontján nem változtatnék.","Megtartanám az eredeti hazaérkezési időt. Megállapodnék Marcival, mikor és milyen üzenetet küldjön, ha késik, és mi lenne a következménye, ha nem jelezne.","Megbeszélném Marcival, mit mondhatna a barátainak induláskor és hogyan jelezhetne, ha késik. A következő alkalomra együtt választanánk olyan hazautat vagy indulási időt, amellyel időben hazaérhetne."],"why":"Az indulás előre megtervezése, a barátoknak szóló mondat kipróbálása és a jelzés egyeztetése együtt segíti a határ betartását."},{"title":"Közlés egy felnőttről","area":3,"scene":"A tizenkét éves Eszter azt mondja, hogy egy felnőtt, aki másnap ismét vele lenne, fájdalmat okozott neki. Kéri, hogy ne beszéljen róla senkinek. Eszter korábban más, hétköznapi ügyekben visszavonta már, amit mondott.","options":["Megígérném Eszternek, hogy a közlés köztünk marad, és nem változtatnék a másnapi találkozón.","Gondoskodnék a másnapi felügyeletről, és leírnám, amit Eszter mondott. A hivatalos jelzéssel megvárnám a másnapi konzultációt.","Nyugodtan meghallgatnám Esztert, és a gyermekvédelmi eljárásrend szerint jeleznék. A másnapi találkozó ügyében megvárnám a visszajelzést.","Nyugodtan meghallgatnám Esztert, elmondanám neki, kinek kell szólnom, hogy segítséget kapjon, és feljegyezném a szavait. Haladéktalanul követném a gyermekvédelmi eljárásrendet, és az illetékesekkel azonnal gondoskodnék a biztonságos másnapi felügyeletről."],"why":"A nyugodt meghallgatás, a pontos feljegyzés, a haladéktalan jelzés és az azonnali biztonságtervezés egymást kiegészítő lépések."}]};
+const byId = id => document.getElementById(id);
+const form = byId("test");
+const participantName = byId("participant-name");
+const results = byId("results");
+const restartModal = byId("restart-modal");
+const letters = "ABCD";
+let answers;
+let orders;
+const worstKey = items.map(() => 0);
+
+participantName.addEventListener("input", () => {
+  byId("name-error").textContent = "";
+  participantName.removeAttribute("aria-invalid");
+});
+
+function worstPoints(i, rank) {
+  return rank === worstKey[i] ? 3 : 0;
+}
+
+function shuffled() {
+  const order = [0, 1, 2, 3];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+function renderItem(item, i) {
+  const order = orders[i];
+  const choices = `<fieldset><legend>Ön mit tenne ebben a helyzetben?</legend>${order.map((rank, position) =>
+    `<div class="reaction"><p><strong>${letters[position]}.</strong> ${item.options[rank]}</p>
+      <div class="ratings">${[["best","Legmegfelelőbb"],["worst","Legkevésbé megfelelő"]].map(([kind,label]) =>
+        `<label class="option ${kind}"><input type="radio" name="${kind}-${i}" value="${rank}" data-item="${i}" data-kind="${kind}" aria-label="${letters[position]}. ${label}"><span>${label}</span></label>`
+      ).join("")}</div></div>`
+  ).join("")}</fieldset>`;
+  return `<article id="item-${i}" aria-labelledby="title-${i}">
+    <div class="item-head">
+      <h2 id="title-${i}" tabindex="-1">${i + 1}. ${item.title}</h2>
+      <div class="item-actions">
+        <button type="button" class="clear-btn" data-clear="${i}" hidden>Törlés</button>
+        <span class="status-text" id="badge-${i}">0/2 válasz</span>
+      </div>
+    </div>
+    <p>${item.scene}</p>
+    ${choices}
+  </article>`;
+}
+
+function renderJumpNav() {
+  byId("jump-nav").innerHTML = items.map((_, i) =>
+    `<button type="button" class="jump-btn" data-jump="${i}" aria-label="Ugrás a(z) ${i + 1}. helyzethez">${i + 1}</button>`
+  ).join("");
+}
+
+byId("jump-nav").addEventListener("click", event => {
+  const btn = event.target.closest("button[data-jump]");
+  if (!btn) return;
+  const idx = Number(btn.dataset.jump);
+  const title = byId(`title-${idx}`);
+  if (title) {
+    byId(`item-${idx}`).scrollIntoView({ behavior: "smooth", block: "start" });
+    title.focus({ preventScroll: true });
+  }
+});
+
+byId("items").addEventListener("click", event => {
+  const clearBtn = event.target.closest("button[data-clear]");
+  if (!clearBtn) return;
+  const i = Number(clearBtn.dataset.clear);
+  answers[i] = { best: null, worst: null };
+  byId(`item-${i}`).querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.checked = false;
+    radio.disabled = false;
+  });
+  byId("error").textContent = "";
+  updateProgress();
+});
+
+function updateProgress() {
+  const count = answers.filter(({best, worst}) => best !== null && worst !== null).length;
+  byId("progress").value = count;
+  byId("progress-label").textContent = `Kitöltött helyzetek ${count}/${items.length}`;
+  byId("progress-percent").textContent = `${Math.round((count / items.length) * 100)}%`;
+
+  answers.forEach(({best, worst}, i) => {
+    const complete = best !== null && worst !== null;
+    const partial = !complete && (best !== null || worst !== null);
+    const article = byId(`item-${i}`);
+    const badge = byId(`badge-${i}`);
+    const clearBtn = article?.querySelector(`[data-clear="${i}"]`);
+    const jumpBtn = byId("jump-nav").querySelector(`[data-jump="${i}"]`);
+    if (article) article.classList.toggle("complete", complete);
+    if (clearBtn) clearBtn.hidden = !complete && !partial;
+    if (badge) {
+      badge.textContent = complete ? "✓ Kész (2/2)" : partial ? "Folyamatban (1/2)" : "0/2 válasz";
+      badge.classList.toggle("done", complete);
+      badge.classList.toggle("partial", partial);
+    }
+    if (jumpBtn) {
+      jumpBtn.classList.toggle("done", complete);
+      jumpBtn.classList.toggle("partial", partial);
+    }
+  });
+}
+
+function start() {
+  participantName.value = "";
+  participantName.removeAttribute("aria-invalid");
+  byId("name-error").textContent = "";
+  answers = items.map(() => ({best:null, worst:null}));
+  orders = items.map(shuffled);
+  byId("items").innerHTML = items.map(renderItem).join("");
+  renderJumpNav();
+  byId("report").replaceChildren();
+  byId("error").textContent = "";
+  results.hidden = true;
+  form.hidden = false;
+  updateProgress();
+}
+
+form.addEventListener("change", event => {
+  const input = event.target;
+  if (!input.matches('input[type="radio"]')) return;
+  const i = Number(input.dataset.item);
+  const answer = answers[i];
+  answer[input.dataset.kind] = Number(input.value);
+  byId(`item-${i}`).querySelectorAll("input").forEach(radio => {
+    const other = radio.dataset.kind === "best" ? "worst" : "best";
+    radio.disabled = Number(radio.value) === answer[other];
+  });
+  byId("error").textContent = "";
+  updateProgress();
+});
+
+function renderReport() {
+  const profile = competencies.map(area => ({...area, score:0, max:0}));
+  const scores = answers.map(({best, worst}, i) => {
+    const points = best * 2 + worstPoints(i, worst);
+    profile[items[i].area].score += points;
+    profile[items[i].area].max += 9;
+    return points;
+  });
+  const total = scores.reduce((sum, points) => sum + points, 0);
+  const priorities = profile.filter(area => area.score < area.max)
+    .sort((a, b) => a.score / a.max - b.score / b.max).slice(0, 2);
+  const safety = scores[7] < 9 || scores[9] < 9;
+  const date = new Intl.DateTimeFormat("hu-HU", {dateStyle:"long"}).format(new Date());
+  const describe = (i, rank) => `${letters[orders[i].indexOf(rank)]}. ${items[i].options[rank]}`;
+  byId("report").innerHTML = `
+    <p><strong>Kitöltési azonosító:</strong> <span id="result-name"></span> · <span class="muted">Kitöltés dátuma: ${date}</span></p>
+    <p class="score">${total} / 90 pont</p>
+    <p class="notice"><strong>Nem validált teszt. Önálló kiválasztási vagy alkalmassági döntésre nem alkalmas.</strong> Az eredmény azt mutatja, mennyire egyeznek a válaszok az előzetes szakmai kulccsal. Nincs megfelelési küszöb vagy összehasonlítási norma.</p>
+    <h3>Kompetenciaprofil</h3>
+    <p class="muted">A részpontszámok területenként 2–3 helyzetből állnak össze.</p>
+    <div class="profile">${profile.map(area => `<div><strong>${area.name}</strong>
+      <p>${area.score} / ${area.max} pont</p>
+      <meter aria-label="${area.name}" min="0" max="${area.max}" value="${area.score}"></meter>
+    </div>`).join("")}</div>
+    <h3>Fejlesztési visszajelzés</h3>
+    ${safety ? '<p class="notice"><strong>Beszélje át a 8. és a 10. helyzetet szakmai konzultáción.</strong> Gyakorolja a közvetlen veszély megszakítását és a bántalmazásról szóló közlésre adott első lépéseket.</p>' : ""}
+    ${priorities.length ? `<ul>${priorities.map(area => `<li><strong>${area.name}.</strong> ${area.practice}</li>`).join("")}</ul>`
+      : "<p>Minden választása egyezett a kulccsal. Képzésen gyakorolja, hogyan mondaná el a gyermeknek a választott reakció első mondatát, és mi lenne a következő lépése.</p>"}
+    <h3>Visszajelzés helyzetenként</h3>
+    <ol class="review">${items.map((item, i) => `<li>
+      <strong>${item.title} · ${scores[i]}/9 pont</strong><br>
+      Legmegfelelőbbnek jelölte (${answers[i].best * 2}/6 pont): ${describe(i, answers[i].best)}<br>
+      Legkevésbé megfelelőnek jelölte (${worstPoints(i, answers[i].worst)}/3 pont): ${describe(i, answers[i].worst)}<br>
+      ${answers[i].worst !== worstKey[i] ? `<strong>A kulcs szerinti legkevésbé megfelelő:</strong> ${describe(i, worstKey[i])}<br>` : ""}
+      ${answers[i].best !== 3 ? `<strong>A kulcs szerinti legmegfelelőbb:</strong> ${describe(i, 3)}<br>` : ""}
+      ${item.why}</li>`).join("")}</ol>
+    <h3>Pontozás</h3>
+    <p>A legmegfelelőbbnek jelölt reakció 0, 2, 4 vagy 6 pontot ér a szakmai kulcs szerint. A kulcs szerinti legkevésbé megfelelő reakció felismerése további 3 pontot ér, minden más jelölés ebben a kategóriában 0 pontot. Helyzetenként legfeljebb 9, összesen 90 pont szerezhető.</p>
+    <p class="muted">A tételek és a kulcs saját fejlesztésűek. A szemlélethez felhasznált háttéranyagok az NCTSN nevelőszülői tananyaga és az NSPCC útmutatója a bántalmazásról szóló közlések fogadásához.</p>`;
+  byId("result-name").textContent = participantName.value.trim();
+}
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!participantName.value.trim()) {
+    byId("name-error").textContent = "Adja meg a kitöltő nevét.";
+    participantName.setAttribute("aria-invalid", "true");
+    participantName.focus();
+    return;
+  }
+  const missing = answers.findIndex(({best, worst}) => best === null || worst === null || best === worst);
+  if (missing !== -1) {
+    const message = `A(z) ${missing + 1}. helyzetben jelölje meg a legmegfelelőbb és a legkevésbé megfelelő reakciót.`;
+    byId("error").textContent = message;
+    byId(`item-${missing}`).scrollIntoView({ behavior: "smooth", block: "start" });
+    byId(`title-${missing}`).focus({ preventScroll: true });
+    return;
+  }
+  renderReport();
+  form.hidden = true;
+  results.hidden = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  byId("result-title").focus({ preventScroll: true });
+});
+
+byId("print").addEventListener("click", () => window.print());
+byId("edit").addEventListener("click", () => {
+  results.hidden = true;
+  form.hidden = false;
+  byId("title-0").focus();
+});
+byId("restart").addEventListener("click", () => {
+  restartModal.hidden = false;
+  byId("cancel-restart").focus();
+});
+byId("cancel-restart").addEventListener("click", () => {
+  restartModal.hidden = true;
+  byId("restart").focus();
+});
+byId("confirm-restart").addEventListener("click", () => {
+  restartModal.hidden = true;
+  start();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  participantName.focus({ preventScroll: true });
+});
+start();
+</script>
+</body>
+</html>
